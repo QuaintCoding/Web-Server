@@ -68,6 +68,33 @@
 		response.sendRedirect("Login_form.jsp");
 		throw new Exception("처음화면으로 가기 오류");
 	} 
+	
+	//회원가입
+	else if(action.equals("sign_up")){
+		pageContext.forward("Sign_up.jsp");
+	}
+	
+	//회원만들기
+	else if(action.equals("make")){
+		String a = request.getParameter("client_id");
+		String b = request.getParameter("client_password");
+		String c = request.getParameter("client_name");
+		String d = request.getParameter("mail1") +"@"+ request.getParameter("mail2");
+		String e = request.getParameter("phone_number");
+		String f = request.getParameter("address");
+		String g = request.getParameter("country");
+		
+		if(clientbean.make_User(a, b, c, e, g, f, d)){
+			out.println("<script> alert('회원가입이 완료되었습	니다')</script>");
+			pageContext.forward("Login_form.jsp");
+		}
+		else{
+			out.println("<script> alert('회원가입 오류!')</script>");
+			pageContext.forward("Login_form.jsp");
+		}
+	}
+	
+	
 	else {
 		response.sendRedirect("Reservation_control.jsp?action=form");
 	}
