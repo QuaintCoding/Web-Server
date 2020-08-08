@@ -94,6 +94,18 @@
 		}
 	}
 	
+	//회원정보 수정 페이지로 가기
+	else if(action.equals("edit_user")){
+		pageContext.forward("Edit_user.jsp");
+	}
+	
+	//회원정보 수정한 뒤 
+	else if(action.equals("update_user")){
+		clientbean.updateUser(clientdao);
+		session.setAttribute("name", clientdao.getClient_name());
+		pageContext.forward("Reservation_available.jsp");
+		System.out.println("Update: " + session.getAttribute("name"));
+	}
 	
 	else {
 		response.sendRedirect("Reservation_control.jsp?action=form");
