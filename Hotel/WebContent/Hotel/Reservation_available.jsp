@@ -33,7 +33,34 @@
 			<button name="action" type="submit" value="edit_user">회원정보수정</button>
 		</form>
 		
-		
+		<form>
+			<table border="1">
+				<tr>
+					<th>방번호</th>
+					<th>방등급</th>
+					<th>방뷰</th>
+					<th>최대인원</th>
+					<th>침대개수</th>
+					<th>흡연가능여부</th>
+					<th>요금</th>
+				</tr>
+				<%
+					for(RoomDAO room : (ArrayList<RoomDAO>)available_rooms){	
+				%>
+				<tr>
+					<td><a href="javascript:check_in(<%=room.getRoom_number()%>)"><%=room.getRoom_number() %></a></td>
+					<td><%=room.getRoom_class() %></td>
+					<td><%=room.getRoom_view() %></td>
+					<td><%=room.getMax_number() %></td>
+					<td><%=room.getBed_number() %></td>
+					<td><%=room.isIs_smoke() %></td>
+					<td><%=room.getRoom_fee() %></td>
+				</tr>
+				<% 
+					}
+				%>
+			</table>
+		</form>
 	</div>
 </body>
 </html>

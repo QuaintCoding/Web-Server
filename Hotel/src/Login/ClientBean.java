@@ -1,6 +1,7 @@
 package Login;
 
 import java.sql.*;
+import java.util.ArrayList;
 
 public class ClientBean {
 
@@ -197,5 +198,79 @@ public class ClientBean {
 		return true;
 	}
 	
+	//예약가능한 방 정보들 가져오기
+	public ArrayList<RoomDAO> getAvailableRoom() {
+		connect();
+		ArrayList<RoomDAO> available_rooms = new ArrayList<>();
+
+		String sql = "select room_info.room_number, room_class, room_view, max_number, bed_number, is_smoke, room_fee "
+				+ "from room_info, reservation_info where room_info.room_number = reservation_info.room_number and is_check = 0";
+
+		try {
+			pstmt = conn.prepareStatement(sql);
+			ResultSet rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				RoomDAO roomDAO = new RoomDAO();
+
+				roomDAO.setRoom_number(rs.getInt("room_number"));
+				roomDAO.setRoom_class(rs.getString("room_class"));
+				roomDAO.setRoom_view(rs.getString("room_view"));
+				roomDAO.setMax_number(rs.getInt("max_number"));
+				roomDAO.setBed_number(rs.getInt("bed_number"));
+				roomDAO.setIs_smoke(rs.getBoolean("is_smoke"));
+				roomDAO.setRoom_fee(rs.getInt("room_fee"));
+
+				available_rooms.add(roomDAO);
+			}
+			rs.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			disconnect();
+		}
+		return available_rooms;
+	}
+	
+	// 회원이 예약한 호텔 리스트 보여주는 함수
+	public ArrayList<RoomDAO> getUserReservation(String client_name) {
+		connect();
+		ArrayList<RoomDAO> booked_rooms = new ArrayList<>();
+
+		String sql = "select reservation_info.room_number, room_class, room_view, max_number, bed_number, is_smoke, total_fee, checkin_date, "
+				+ "checkout_date, room_fee from room_info, reservation_info where room_info.room_number = reservation_info.room_number "
+				+ " and client_name = ?";
+
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, client_name);
+			
+			ResultSet rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				RoomDAO roomDAO = new RoomDAO();
+
+				roomDAO.setRoom_number(rs.getInt("room_number"));
+				roomDAO.setRoom_class(rs.getString("room_class"));
+				roomDAO.setRoom_view(rs.getString("room_view"));
+				roomDAO.setMax_number(rs.getInt("max_number"));
+				roomDAO.setBed_number(rs.getInt("bed_number"));
+				roomDAO.setIs_smoke(rs.getBoolean("is_smoke"));
+				roomDAO.setTotal_fee(rs.getInt("total_fee"));
+				roomDAO.setCheckin_date(rs.getDate("checkin_date"));
+				roomDAO.setCheckout_date(rs.getDate("checkout_date"));
+				roomDAO.setRoom_fee(rs.getInt("room_fee"));
+				
+				booked_rooms.add(roomDAO);
+			}
+			rs.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			disconnect();
+		}
+		return booked_rooms;
+	}
+		
 	
 }
